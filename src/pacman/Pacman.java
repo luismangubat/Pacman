@@ -5,7 +5,6 @@
  */
 package pacman;
 
-
 import environment.ApplicationStarter;
 import environment.Direction;
 import grid.Grid;
@@ -20,12 +19,13 @@ import static javafx.scene.paint.Color.color;
  * @author Luis
  */
 public class Pacman {
+
     private final int mouthMaxWidth;
 
-    public Pacman(int x, int y, Color color, int width, int height){
+    public Pacman(int x, int y, Color color, int width, int height) {
         this.x = x;
         this.y = y;
-        
+
         this.color = color;
         this.width = width;
         this.height = height;
@@ -35,16 +35,24 @@ public class Pacman {
         mouthChangeRate = 8;
         mouthOpening = true;
     }
-    
+
     public void draw(Graphics graphics) {
         graphics.setColor(new Color(235, 240, 0));
-        
+
         //TODO - respect the direction
-        graphics.fillArc(x, y, width, height, mouthWidth / 2, 360 - (mouthWidth));    
+        if (direction == Direction.RIGHT) {
+            graphics.fillArc(x, y, width, height, mouthWidth / 2, 360 - (mouthWidth));
+        } else if (direction == Direction.LEFT) {
+            graphics.fillArc(x, y, width, height, 180 + mouthWidth / 2, 360 - (mouthWidth));
+        } else if (direction == Direction.UP) {
+            graphics.fillArc(x, y, width, height, 90 + mouthWidth / 2, 360 - (mouthWidth));
+        } else if (direction == Direction.DOWN) {
+            graphics.fillArc(x, y, width, height, 270 + mouthWidth / 2, 360 - (mouthWidth));
+        } 
+        
     }
-    
-    
-    public void move(){
+
+    public void move() {
         if (direction == Direction.LEFT) {
             x -= getSpeed();
         } else if (direction == Direction.RIGHT) {
@@ -54,43 +62,41 @@ public class Pacman {
         } else if (direction == Direction.DOWN) {
             y += getSpeed();
         }
-        
+
         changeMouthWidth();
     }
-    
-    public void changeMouthWidth(){
+
+    public void changeMouthWidth() {
         if (mouthOpening && (mouthWidth >= mouthMaxWidth)) {
             mouthOpening = false;
         } else if (!mouthOpening && (mouthWidth <= 0)) {
             mouthOpening = true;
         }
-        
+
         if (mouthOpening) {
             mouthWidth += mouthChangeRate;
         } else {
             mouthWidth -= mouthChangeRate;
         }
     }
-    
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
     private int y;
     private int speed = 4;
     private Color color;
-    
+
     private int width;
     private int height;
-    
+
     private int mouthWidth;
     private int mouthChangeRate;
     private boolean mouthOpening;
-    
+
     private Direction direction = Direction.LEFT;
-    private ArrayList<Point>body;
+    private ArrayList<Point> body;
     private Grid grid;
     private Color bodyColor = Color.MAGENTA;
-    
 
     /**
      * @return the direction
