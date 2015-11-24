@@ -20,15 +20,20 @@ import static javafx.scene.paint.Color.color;
  * @author Luis
  */
 public class Pacman {
+    private final int mouthMaxWidth;
 
-    public Pacman(int x, int y, Color color, int width, int height, int mouthWidth){
+    public Pacman(int x, int y, Color color, int width, int height){
         this.x = x;
         this.y = y;
         
         this.color = color;
         this.width = width;
         this.height = height;
-        this.mouthWidth = mouthWidth;
+
+        mouthWidth = 0;
+        mouthMaxWidth = 90;
+        mouthChangeRate = 8;
+        mouthOpening = true;
     }
     
     public void draw(Graphics graphics) {
@@ -37,15 +42,49 @@ public class Pacman {
         //TODO - respect the direction
         graphics.fillArc(x, y, width, height, mouthWidth / 2, 360 - (mouthWidth));    
     }
+    
+    
+    public void move(){
+        if (direction == Direction.LEFT) {
+            x -= getSpeed();
+        } else if (direction == Direction.RIGHT) {
+            x += getSpeed();
+        } else if (direction == Direction.UP) {
+            y -= getSpeed();
+        } else if (direction == Direction.DOWN) {
+            y += getSpeed();
+        }
+        
+        changeMouthWidth();
+    }
+    
+    public void changeMouthWidth(){
+        if (mouthOpening && (mouthWidth >= mouthMaxWidth)) {
+            mouthOpening = false;
+        } else if (!mouthOpening && (mouthWidth <= 0)) {
+            mouthOpening = true;
+        }
+        
+        if (mouthOpening) {
+            mouthWidth += mouthChangeRate;
+        } else {
+            mouthWidth -= mouthChangeRate;
+        }
+    }
+    
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
     private int y;
+    private int speed = 4;
     private Color color;
     
     private int width;
     private int height;
+    
     private int mouthWidth;
+    private int mouthChangeRate;
+    private boolean mouthOpening;
     
     private Direction direction = Direction.LEFT;
     private ArrayList<Point>body;
@@ -153,6 +192,20 @@ public class Pacman {
      */
     public int getMouthWidth() {
         return mouthWidth;
+    }
+
+    /**
+     * @return the speed
+     */
+    public int getSpeed() {
+        return speed;
+    }
+
+    /**
+     * @param speed the speed to set
+     */
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 //</editor-fold>
 }

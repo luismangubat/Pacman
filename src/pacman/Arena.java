@@ -29,14 +29,11 @@ class Arena extends Environment implements CellDataProviderIntf {
 
     private Grid grid;
     private Pacman pac;
-//    private Pacman fred;
-//    private int width = 80;
-//    private int widthChange = -1;
 
     public Arena() {
         this.setBackground(Color.black);
 
-        pac = new Pacman(100, 100, Color.yellow, 40, 40, 90);
+        pac = new Pacman(100, 100, Color.yellow, 40, 40);
         grid = new Grid(25, 30, 40, 40, new Point(5, 5), Color.yellow);
     }
 
@@ -48,6 +45,10 @@ class Arena extends Environment implements CellDataProviderIntf {
 
     @Override
     public void timerTaskHandler() {
+        if (pac != null) {
+            pac.move();
+        }
+        
 
 //        if (pac != null) {
 //            if (width <= 0) {
@@ -70,25 +71,39 @@ class Arena extends Environment implements CellDataProviderIntf {
 //                pacX = 900;
 //            }
 //            pac.setX(pacX);
-        System.out.println("Hey Dude..." + counter);
-//    }
+    
     }
 
     @Override
     public void keyPressedHandler(KeyEvent e) {
-        System.out.println("Keyp Press" + e.getKeyChar());
-        System.out.println("Keyp Press" + e.getKeyCode());
+//        System.out.println("Keyp Press" + e.getKeyChar());
+//        System.out.println("Keyp Press" + e.getKeyCode());
+        
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            grid.setDirection(Direction.UP);
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            grid.setDirection(Direction.LEFT);
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            grid.setDirection(Direction.RIGHT);
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             pac.setDirection(Direction.UP);
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            pac.setDirection(Direction.LEFT);
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            pac.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            pac.setDirection(Direction.DOWN);
+        } else if (e.getKeyCode() == KeyEvent.VK_1) {
+            pac.setSpeed(FROZEN);
+        } else if (e.getKeyCode() == KeyEvent.VK_2) {
+            pac.setSpeed(SLOW);
+        } else if (e.getKeyCode() == KeyEvent.VK_3) {
+            pac.setSpeed(MEDIUM);
+        } else if (e.getKeyCode() == KeyEvent.VK_4) {
+            pac.setSpeed(FAST);
         }
 
     }
+    
+    final int FAST = 8;
+    final int MEDIUM = 4;
+    final int SLOW = 2;
+    final int FROZEN = 0;
+    
 
     @Override
     public void keyReleasedHandler(KeyEvent e) {
