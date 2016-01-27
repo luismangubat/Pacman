@@ -5,14 +5,13 @@
  */
 package pacman;
 
-import environment.ApplicationStarter;
 import environment.Direction;
 import grid.Grid;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
-import static javafx.scene.paint.Color.color;
 
 /**
  *
@@ -21,6 +20,7 @@ import static javafx.scene.paint.Color.color;
 public class Pacman {
 
     private final int mouthMaxWidth;
+    private int health = 100;
 
     public Pacman(int x, int y, Color color, int width, int height) {
         this.x = x;
@@ -34,12 +34,36 @@ public class Pacman {
         mouthMaxWidth = 90;
         mouthChangeRate = 8;
         mouthOpening = true;
+        
+    }
+    
+    public Rectangle getHitBox(){
+        return new Rectangle(x, y ,width ,height );
+       
+//        return new Rectangle(x + (width / 4), y + (height / 4),(width / 2), (height / 2));
     }
 
     public void draw(Graphics graphics) {
-        graphics.setColor(new Color(235, 240, 0));
+        graphics.setColor(color);
 
         //TODO - respect the direction
+        int offset = 0;
+        
+        if (getDirection() != Direction.STOP) {
+            facing = direction;
+        }
+        
+        if (facing == Direction.RIGHT) {
+            offset = 0;
+        } else if (facing == Direction.UP) {
+            offset = 90;
+        } else if (facing == Direction.LEFT) {
+            offset = 180;
+        } else if (facing == Direction.DOWN) {
+            offset = 270;
+        } 
+        graphics.fillArc(x, y, width, height, offset + mouthWidth / 2, 360 - (mouthWidth));
+        
         if (direction == Direction.RIGHT) {
             graphics.fillArc(x, y, width, height, mouthWidth / 2, 360 - (mouthWidth));
         } else if (direction == Direction.LEFT) {
@@ -50,9 +74,14 @@ public class Pacman {
             graphics.fillArc(x, y, width, height, 270 + mouthWidth / 2, 360 - (mouthWidth));
         } 
         
+        graphics.setColor(Color.RED);
+        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
+    
 
     public void move() {
+        if (isAlive()) {
+//        Point newPosition = new Point(getPosition());
         if (direction == Direction.LEFT) {
             x -= getSpeed();
         } else if (direction == Direction.RIGHT) {
@@ -62,9 +91,14 @@ public class Pacman {
         } else if (direction == Direction.DOWN) {
             y += getSpeed();
         }
-
+       
         changeMouthWidth();
+        }
     }
+
+//    public Point getHead() {
+//        return body.get(x & y);
+//    }
 
     public void changeMouthWidth() {
         if (mouthOpening && (mouthWidth >= mouthMaxWidth)) {
@@ -78,7 +112,9 @@ public class Pacman {
         } else {
             mouthWidth -= mouthChangeRate;
         }
+    
     }
+
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
@@ -94,6 +130,7 @@ public class Pacman {
     private boolean mouthOpening;
 
     private Direction direction = Direction.LEFT;
+    private Direction facing = Direction.LEFT;
     private ArrayList<Point> body;
     private Grid grid;
     private Color bodyColor = Color.MAGENTA;
@@ -214,4 +251,26 @@ public class Pacman {
         this.speed = speed;
     }
 //</editor-fold>
+
+    public Point getPosition() {
+        return new Point(x, y);    
+    }
+
+    /**
+     * @return the health
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * @param health the health to set
+     */
+    public void addHealth(int health) {
+        this.health += health;
+    }
+    public boolean isAlive() {
+        return (health >= 0);
+        
+    }
 }

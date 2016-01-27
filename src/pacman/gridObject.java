@@ -8,33 +8,23 @@ package pacman;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 
 /**
  *
  * @author Luis
  */
-public class Barrier {
-
+public class gridObject {
     public void draw(Graphics graphics) {
         graphics.setColor(color);
         graphics.fill3DRect(cellData.getSystemCoordX(x, y), cellData.getSystemCoordY(x, y), cellData.getCellWidth(), cellData.getCellHeight(), true);
-        
-        //temp for debug
-        graphics.setColor(Color.PINK);
-        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
 
-    public Barrier(int x, int y, Color color, boolean breakable, CellDataProviderIntf cellData) {
+    public gridObject(int x, int y, Color color, boolean breakable, CellDataProviderIntf cellData) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.breakable = breakable;
         this.cellData = cellData;
-    }
-    
-    public Rectangle getHitBox(){
-        return new Rectangle(cellData.getSystemCoordX(x, y), cellData.getSystemCoordY(x, y), cellData.getCellWidth(), cellData.getCellHeight());
     }
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
@@ -45,31 +35,14 @@ public class Barrier {
     
     public Point getLocation(){
         return new Point (x, y);
+        
     }
 
-    public int getWidth(){
-        return cellData.getCellWidth();
-    }
-    
     /**
      * @return the x
      */
     public int getX() {
         return x;
-    }
-
-    /**
-     * @return the x
-     */
-    public int getSystemCoordY() {
-        return cellData.getSystemCoordY(x, y);
-    }
-
-    /**
-     * @return the x
-     */
-    public int getSystemCoordX() {
-        return cellData.getSystemCoordX(x, y);
     }
 
     /**
@@ -135,8 +108,6 @@ public class Barrier {
         this.cellData = cellData;
     }
 //</editor-fold>
-
-    int getHeight() {
-        return cellData.getCellHeight();    
-    }
 }
+    
+
