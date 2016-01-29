@@ -5,10 +5,15 @@
  */
 package pacman;
 
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 /**
  *
  * @author Luis
  */
 public interface AnimatedImageProvidetIntf {
+    public BufferedImage getAnimatedImage(String animatorName);
+    public void setAnimatorImageName(String animatorName, ArrayList<String> ImageNames);
     
 }

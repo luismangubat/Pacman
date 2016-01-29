@@ -37,12 +37,11 @@ class Arena extends Environment implements CellDataProviderIntf {
     private Pacman pac;
     private ArrayList<Barrier> barriers;
     private ArrayList<Item> items;
-    
-    
+    private Enemy orangeFreddy;
+    private SpriteManager spriteManager;
+
     public static final int DEFAULT_WINDOW_WIDTH = 900;
     public static final int DEFAULT_WINDOW_HEIGHT = 578;
-    
-    
 
     public Arena() {
         this.setBackground(Color.black);
@@ -55,6 +54,9 @@ class Arena extends Environment implements CellDataProviderIntf {
 //        barriers.add(new Barrier(11, 4, Color.GREEN, false, this));
 //        barriers.add(new Barrier(12, 4, Color.GREEN, false, this));
         items = new ArrayList<>();
+
+        spriteManager = new SpriteManager();
+        orangeFreddy = new Enemy(Enemy.ENEMY_TYPE_ORANGE_FREDDY, spriteManager);
 //        items.add(new Item(10, 5,"POWER UP", ResourceTools.loadImageFromResource"arena/pacman", this));
 
 // x , y ,endx, endy
@@ -121,51 +123,48 @@ class Arena extends Environment implements CellDataProviderIntf {
         createBarrierRange(30, 17, 30, 21);
 
         createBarrierRange(17, 17, 23, 17);
-        
+
         createBarrierRange(17, 14, 17, 17);
-        
+
         createBarrierRange(17, 14, 18, 14);
-        
+
         createBarrierRange(22, 14, 23, 14);
-        
+
         createBarrierRange(23, 14, 23, 16);
-        
+
         createBarrierRange(20, 21, 20, 24); //middle
-        
+
         createBarrierRange(14, 21, 26, 21);
-        
+
         createBarrierRange(3, 24, 6, 24);
-        
+
         createBarrierRange(6, 24, 6, 27);
-        
+
         createBarrierRange(1, 27, 3, 27);
-        
+
         createBarrierRange(4, 30, 16, 30);
-        
+
 //        createBarrierRange(14, 13, 14, 17);
-        
-         createBarrierRange(10, 27, 10, 30);
-         
-         createBarrierRange(10, 24, 16, 24);
-       
-         createBarrierRange(20, 27, 20, 30);
-         
-         createBarrierRange(14, 27, 26, 27);
-        
-         createBarrierRange(24, 30, 36, 30);
-        
-         createBarrierRange(30, 27, 30, 30);
-      
-         createBarrierRange(24, 24, 30, 24);
-         
-         createBarrierRange(34, 24, 36, 24);
-        
-         createBarrierRange(34, 24, 34, 27);
-         
-         createBarrierRange(37, 27, 39, 27);
-        
-        
-         
+        createBarrierRange(10, 27, 10, 30);
+
+        createBarrierRange(10, 24, 16, 24);
+
+        createBarrierRange(20, 27, 20, 30);
+
+        createBarrierRange(14, 27, 26, 27);
+
+        createBarrierRange(24, 30, 36, 30);
+
+        createBarrierRange(30, 27, 30, 30);
+
+        createBarrierRange(24, 24, 30, 24);
+
+        createBarrierRange(34, 24, 36, 24);
+
+        createBarrierRange(34, 24, 34, 27);
+
+        createBarrierRange(37, 27, 39, 27);
+
     }
 
     private void createBarrierRange(int startX, int startY, int endX, int endY) {
@@ -222,7 +221,7 @@ class Arena extends Environment implements CellDataProviderIntf {
                 } else if (pac.getDirection() == Direction.DOWN) {
                     pac.setY(barrier.getSystemCoordY() - pac.getHeight());
                 }
-                
+
                 pac.setDirection(Direction.STOP);
 
 //stop the pac
@@ -287,6 +286,17 @@ class Arena extends Environment implements CellDataProviderIntf {
             audio.AudioPlayer.play("/pacman/Bleat.wav");
 
         }
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+
+            orangeFreddy.setDirection(Direction.LEFT);
+        } else if (e.getKeyCode() == KeyEvent.VK_D) {
+
+            orangeFreddy.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_W) {
+            orangeFreddy.setDirection(Direction.UP);
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            orangeFreddy.setDirection(Direction.DOWN);
+        }
     }
 
     final int FAST = 8;
@@ -304,15 +314,15 @@ class Arena extends Environment implements CellDataProviderIntf {
 
     @Override
     public void paintEnvironment(Graphics g) {
-        
+
 //        System.out.println(Main.getWindowSize());
-        
         AffineTransform atWindow;
         Graphics2D graphics = (Graphics2D) g;
         atWindow = AffineTransform.getScaleInstance((double) Main.getWindowSize().width / DEFAULT_WINDOW_WIDTH, (double) Main.getWindowSize().height / DEFAULT_WINDOW_HEIGHT);
-        if (atWindow != null) graphics.setTransform(atWindow);
-        
- 
+        if (atWindow != null) {
+            graphics.setTransform(atWindow);
+        }
+
         if (grid != null) {
             grid.paintComponent(graphics);
 
@@ -331,6 +341,9 @@ class Arena extends Environment implements CellDataProviderIntf {
             for (int i = 0; i < items.size(); i++) {
                 items.get(i).draw(graphics);
 
+            }
+            if (orangeFreddy != null) {
+                orangeFreddy.draw(g);
             }
         }
 
