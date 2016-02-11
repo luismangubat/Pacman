@@ -39,6 +39,10 @@ class Arena extends Environment implements CellDataProviderIntf {
     private ArrayList<Item> items;
     private Enemy orangeFreddy;
     private SpriteManager spriteManager;
+    private Enemy blueBonnie;
+    private Enemy yellowChica;
+    private Enemy redFoxy;
+    private GameState state;
 
     public static final int DEFAULT_WINDOW_WIDTH = 900;
     public static final int DEFAULT_WINDOW_HEIGHT = 578;
@@ -56,9 +60,14 @@ class Arena extends Environment implements CellDataProviderIntf {
         items = new ArrayList<>();
 
         spriteManager = new SpriteManager();
-        orangeFreddy = new Enemy(Enemy.ENEMY_TYPE_ORANGE_FREDDY, spriteManager);
-//        items.add(new Item(10, 5,"POWER UP", ResourceTools.loadImageFromResource"arena/pacman", this));
+        orangeFreddy = new Enemy(Enemy.ENEMY_TYPE_ORANGE_FREDDY, new Point(323, 232), spriteManager);
+        blueBonnie = new Enemy(Enemy.ENEMY_TYPE_BLUE_BONNIE, new Point(298, 232), spriteManager);
+        yellowChica = new Enemy(Enemy.ENEMY_TYPE_YELLOW_CHICA, new Point(273, 232), spriteManager);
+        
+        setState(GameState.PAUSED);
 
+//        items.add(new Item(10, 5,"POWER UP", ResourceTools.loadImageFromResource"arena/pacman", this));
+//<editor-fold defaultstate="collapsed" desc="Barriers">
 // x , y ,endx, endy
         createBarrierRange(0, 10, 6, 10);
         createBarrierRange(0, 0, 0, 10);
@@ -75,23 +84,23 @@ class Arena extends Environment implements CellDataProviderIntf {
         createBarrierRange(0, 0, 40, 0);
         // Right Upper Edge Barrier
         createBarrierRange(40, 0, 40, 10);
-        // Right Bottom Edge Barrier 
+        // Right Bottom Edge Barrier
         createBarrierRange(40, 21, 40, 32);
 //       Middle Bottom Edge Barrier
         createBarrierRange(34, 17, 40, 17);
-        // Middle Upper Edge Barrier 
+        // Middle Upper Edge Barrier
         createBarrierRange(34, 14, 40, 14);
         // Middle Upright Edge Barrier
         createBarrierRange(34, 10, 34, 14);
-        // Middle LowerRight Edge Barrier 
+        // Middle LowerRight Edge Barrier
         createBarrierRange(34, 17, 34, 21);
         // Middle Middle Upper Edge  Barrer
         createBarrierRange(35, 10, 40, 10);
-        // Middle Middle Bottom Edge Barrier 
+        // Middle Middle Bottom Edge Barrier
         createBarrierRange(35, 21, 40, 21);
-        // Midle Vertical Upper Barrier 
+        // Midle Vertical Upper Barrier
         createBarrierRange(34, 3, 36, 4);
-        // Middle Vertical Left Upper Barrier 
+        // Middle Vertical Left Upper Barrier
         createBarrierRange(4, 3, 6, 4);
         // Middle Bottom Left Barrer
         createBarrierRange(4, 7, 6, 7);
@@ -164,6 +173,7 @@ class Arena extends Environment implements CellDataProviderIntf {
         createBarrierRange(34, 24, 34, 27);
 
         createBarrierRange(37, 27, 39, 27);
+//</editor-fold>
 
     }
 
@@ -184,6 +194,10 @@ class Arena extends Environment implements CellDataProviderIntf {
 
     @Override
     public void timerTaskHandler() {
+        if (state == GameState.RUN) {
+            
+        
+        
         if (pac != null) {
             // if could to limit, then  move snake and reset counter,
             // else keep counting
@@ -193,12 +207,49 @@ class Arena extends Environment implements CellDataProviderIntf {
             } else {
                 // else keep counting counting
             }
+            
             checkIntersections();
         }
+        if (yellowChica != null) {
+            // if could to limit, then  move snake and reset counter,
+            // else keep counting
+            if (moveDelay >= moveDelayLimit) {
+                moveDelay = 0;
+                yellowChica.move();
+            } else {
+                // else keep counting counting
+            }
+            if (orangeFreddy != null) {
+            // if could to limit, then  move snake and reset counter,
+            // else keep counting
+            if (moveDelay >= moveDelayLimit) {
+                moveDelay = 0;
+                orangeFreddy.move();
+            } else {
+                // else keep counting counting
+            }
+            if (blueBonnie != null) {
+            // if could to limit, then  move snake and reset counter,
+            // else keep counting
+            if (moveDelay >= moveDelayLimit) {
+                moveDelay = 0;
+                blueBonnie.move();
+            } else {
+                // else keep counting counting
+            }
+            }
+            }
+            checkIntersections();
+        }
+
+    }
     }
 
     public void checkIntersections() {
-        for (Barrier barrier : barriers) {
+        for (Barrier barrier : barriers) { 
+        
+            
+            
             if (barrier.getHitBox().intersects(pac.getHitBox())) {
                 //if the barrier is to the LEFT of the pacman, move the pac man 
                 // the the RIGHT, and stop him moving left
@@ -230,12 +281,92 @@ class Arena extends Environment implements CellDataProviderIntf {
                 //kill the pac
                 //play a sound
             }
-        }
+
+        //exact the SAME code for EACH monster    
+            if (barrier.getHitBox().intersects(yellowChica.getHitBox())) {
+                
+                //if the barrier is to the LEFT of the pacman, move the pac man 
+                // the the RIGHT, and stop him moving left
+//                if (barrier.getSystemCoordX() < pac.getX()) {
+                if (yellowChica.getDirection() == Direction.LEFT) {
+                  
+                    //we must have a barrier on out LEFT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    yellowChica.setX(barrier.getSystemCoordX() + barrier.getWidth());
+
+                } else if (yellowChica.getDirection() == Direction.RIGHT) {
+                    //we must have a barrier on out RIGHT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    yellowChica.setX(barrier.getSystemCoordX() - yellowChica.getWidth());
+
+                } else if (yellowChica.getDirection() == Direction.UP) {
+                    //we must have a barrier on out DOWN!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    yellowChica.setY(barrier.getSystemCoordY() + barrier.getWidth());
+
+                } else if (yellowChica.getDirection() == Direction.DOWN) {
+                    yellowChica.setY(barrier.getSystemCoordY() - yellowChica.getHeight());
+                }
+
+                yellowChica.setDirection(Direction.STOP);
+
+            }
+        if (barrier.getHitBox().intersects(orangeFreddy.getHitBox())) {
+                //if the barrier is to the LEFT of the pacman, move the pac man 
+                // the the RIGHT, and stop him moving left
+//                if (barrier.getSystemCoordX() < pac.getX()) {
+                if (orangeFreddy.getDirection() == Direction.LEFT) {
+                    //we must have a barrier on out LEFT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    orangeFreddy.setX(barrier.getSystemCoordX() + barrier.getWidth());
+
+                } else if (orangeFreddy.getDirection() == Direction.RIGHT) {
+                    //we must have a barrier on out RIGHT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    orangeFreddy.setX(barrier.getSystemCoordX() - orangeFreddy.getWidth());
+
+                } else if (orangeFreddy.getDirection() == Direction.UP) {
+                    //we must have a barrier on out DOWN!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    orangeFreddy.setY(barrier.getSystemCoordY() + barrier.getWidth());
+
+                } else if (orangeFreddy.getDirection() == Direction.DOWN) {
+                    orangeFreddy.setY(barrier.getSystemCoordY() - orangeFreddy.getHeight());
+                }
+
+                orangeFreddy.setDirection(Direction.STOP);
+            
+
 //        if (barriers.contains(pac.getPosition())) {
 //            pac.addHealth(-1000000);
 //        }
-    }
+        }
+        if (barrier.getHitBox().intersects(blueBonnie.getHitBox())) {
+                //if the barrier is to the LEFT of the pacman, move the pac man 
+                // the the RIGHT, and stop him moving left
+//                if (barrier.getSystemCoordX() < pac.getX()) {
+                if (blueBonnie.getDirection() == Direction.LEFT) {
+                    //we must have a barrier on out LEFT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    blueBonnie.setX(barrier.getSystemCoordX() + barrier.getWidth());
 
+                } else if (blueBonnie.getDirection() == Direction.RIGHT) {
+                    //we must have a barrier on out RIGHT!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    blueBonnie.setX(barrier.getSystemCoordX() - blueBonnie.getWidth());
+
+                } else if (blueBonnie.getDirection() == Direction.UP) {
+                    //we must have a barrier on out DOWN!!!
+                    //  - push the pacman back to the right, so there is NO LONGER and intersection
+                    blueBonnie.setY(barrier.getSystemCoordY() + barrier.getWidth());
+
+                } else if (blueBonnie.getDirection() == Direction.DOWN) {
+                    blueBonnie.setY(barrier.getSystemCoordY() - blueBonnie.getHeight());
+                }
+
+                blueBonnie.setDirection(Direction.STOP);
+        }
+        }
 //        if (pac != null) {
 //            if (width <= 0) {
 //                widthChange = +8;
@@ -257,6 +388,8 @@ class Arena extends Environment implements CellDataProviderIntf {
 //                pacX = 900;
 //            }
 //            pac.setX(pacX);
+    }
+
     @Override
     public void keyPressedHandler(KeyEvent e) {
 //        System.out.println("Keyp Press" + e.getKeyChar());
@@ -296,6 +429,43 @@ class Arena extends Environment implements CellDataProviderIntf {
             orangeFreddy.setDirection(Direction.UP);
         } else if (e.getKeyCode() == KeyEvent.VK_S) {
             orangeFreddy.setDirection(Direction.DOWN);
+        } else if (e.getKeyCode() == KeyEvent.VK_1) {
+            orangeFreddy.setSpeed(FROZEN);
+           
+        } else if (e.getKeyCode() == KeyEvent.VK_2) {
+            orangeFreddy.setSpeed(SLOW);
+            
+        } else if (e.getKeyCode() == KeyEvent.VK_3) {
+            orangeFreddy.setSpeed(MEDIUM);
+        } else if (e.getKeyCode() == KeyEvent.VK_4) {
+            orangeFreddy.setSpeed(FAST);
+            
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_J) {
+            blueBonnie.setDirection(Direction.LEFT);
+        } else if (e.getKeyCode() == KeyEvent.VK_L) {
+            blueBonnie.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_K) {
+            blueBonnie.setDirection(Direction.DOWN);
+        } else if (e.getKeyCode() == KeyEvent.VK_I) {
+            blueBonnie.setDirection(Direction.UP);
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_F) {
+            yellowChica.setDirection(Direction.LEFT);
+        } else if (e.getKeyCode() == KeyEvent.VK_H) {
+            yellowChica.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_G) {
+            yellowChica.setDirection(Direction.DOWN);
+        } else if (e.getKeyCode() == KeyEvent.VK_T) {
+            yellowChica.setDirection(Direction.UP);
+        } if (e.getKeyCode() == KeyEvent.VK_P){
+            if (state == GameState.PAUSED) {
+            setState(GameState.RUN);
+        } else  if (state == GameState.RUN) {
+            setState(GameState.PAUSED);
+    }
         }
     }
 
@@ -345,6 +515,17 @@ class Arena extends Environment implements CellDataProviderIntf {
             if (orangeFreddy != null) {
                 orangeFreddy.draw(g);
             }
+            if (blueBonnie != null) {
+                blueBonnie.draw(g);
+            }
+            if (yellowChica != null) {
+                yellowChica.draw(g);
+            }
+        } if (state == GameState.PAUSED) {
+//            graphics.setFont();
+            graphics.setColor(Color.WHITE);
+            graphics.drawString("PAUSED", 290, 200);
+            
         }
 
 //        if (myBarriers != null) {
@@ -373,4 +554,18 @@ class Arena extends Environment implements CellDataProviderIntf {
         return grid.getCellSystemCoordinate(x, y).y;
     }
 //</editor-fold>
+
+    /**
+     * @return the state
+     */
+    public GameState getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState(GameState state) {
+        this.state = state;
+    }
 }
