@@ -9,6 +9,9 @@ package pacman;
  *
  * @author Luis
  */
-public enum GameState {
-    MENU, PAUSED, RUN, CRASHED, RESET
+public interface AudioPlayerIntf {
+    public void playAudio(String name, boolean loop);
+    public void stopAudio(String name);
+    
+    
 }

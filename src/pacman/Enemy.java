@@ -51,6 +51,10 @@ public class Enemy {
 
         this.imageProvider = imageProvider;
         this.position = position;
+        this.speed = 2;
+        
+      
+        
         if (type.equals(ENEMY_TYPE_ORANGE_FREDDY)) {
             animatorName = SpriteManager.ORANGE_FREDDY_ANIMATOR;
 
