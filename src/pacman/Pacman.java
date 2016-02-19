@@ -32,7 +32,7 @@ public class Pacman {
 
         mouthWidth = 0;
         mouthMaxWidth = 90;
-        mouthChangeRate = 8;
+        mouthChangeRate = 20;
         mouthOpening = true;
         
     }
@@ -74,7 +74,7 @@ public class Pacman {
             graphics.fillArc(x, y, width, height, 270 + mouthWidth / 2, 360 - (mouthWidth));
         } 
         
-        graphics.setColor(Color.RED);
+        graphics.setColor(Color.BLACK);
         graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
     
