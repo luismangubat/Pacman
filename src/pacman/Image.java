@@ -5,6 +5,7 @@
  */
 package pacman;
 
+import images.ResourceTools;
 import java.awt.Graphics;
 
 /**
@@ -28,8 +29,12 @@ public class Image {
         this.type = type;
         this.image = image;
         this.cellData = cellData;
-
+  if (type.equals(SCARY_PIC)) {
+      image = ResourceTools.loadImageFromFile("/pacman/scary.jpg");
+  }
     } 
+    
+    public static final String SCARY_PIC = "SCARY";
     
     
     

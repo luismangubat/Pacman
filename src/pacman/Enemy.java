@@ -37,8 +37,8 @@ public class Enemy {
 
     public void draw(Graphics graphics) {
         graphics.drawImage(getImage(), position.x, position.y, getWidth(), getHeight(), null);
-        graphics.setColor(Color.RED);
-        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
+//        graphics.setColor(Color.RED);
+//        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
 
     {

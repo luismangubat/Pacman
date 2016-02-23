@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import sun.audio.*;
+import timer.DurationTimer;
 
 /**
  *
@@ -46,11 +47,17 @@ class Arena extends Environment implements CellDataProviderIntf {
     private GameState state;
     private AudioManager am;
     private int score;
+    
+    private DurationTimer scaryPictureTimer;
 
     public static final int DEFAULT_WINDOW_WIDTH = 900;
     public static final int DEFAULT_WINDOW_HEIGHT = 578;
 
     private static final int orbDiameter = 10;
+    private ArrayList<Image> scaryPic;
+    
+    
+    
 
     private ArrayList<Orb> getCopyOfOrbs() {
         ArrayList<Orb> copy = new ArrayList<>();
@@ -61,9 +68,11 @@ class Arena extends Environment implements CellDataProviderIntf {
     }
 
     public Arena() {
-        this.setBackground(Color.black);
+        this.setBackground(Color.red);
+        
+        scaryPictureTimer = new DurationTimer(0);        
 
-        grid = new Grid(100, 200, 15, 15, new Point(5, 5), Color.black);
+        grid = new Grid(100, 200, 15, 15, new Point(5, 5), Color.red);
 
         barriers = new ArrayList<>();
 //        barriers.add(new Barrier(10, 4, Color.GREEN, false, this));
@@ -234,7 +243,7 @@ class Arena extends Environment implements CellDataProviderIntf {
     private void createBarrierRange(int startX, int startY, int endX, int endY) {
         for (int x = startX; x <= endX; x++) {
             for (int y = startY; y <= endY; y++) {
-                barriers.add(new Barrier(x, y, Color.BLUE, true, this));
+                barriers.add(new Barrier(x, y, Color.black, true, this));
             }
         }
     }
@@ -300,7 +309,6 @@ class Arena extends Environment implements CellDataProviderIntf {
                 score += 10;
                 //make a funny sound
                 //add points
-                System.out.println("HIT");
                 
 
             }
@@ -747,7 +755,7 @@ class Arena extends Environment implements CellDataProviderIntf {
         orbs.add(new Orb(135, 72, orbDiameter, Color.ORANGE));
 
 //</editor-fold>
-                
+                scaryPictureTimer.start(2000);
                 audio.AudioPlayer.play("/pacman/screamo.wav");
             }
             if (pac.getHitBox().intersects(blueBonnie.getHitBox())) {
@@ -1044,6 +1052,7 @@ class Arena extends Environment implements CellDataProviderIntf {
 
 //</editor-fold>
             audio.AudioPlayer.play("/pacman/screamo.wav");
+                scaryPictureTimer.start(2000);
 
             }
             if (pac.getHitBox().intersects(yellowChica.getHitBox())) {
@@ -1340,6 +1349,8 @@ class Arena extends Environment implements CellDataProviderIntf {
 
 //</editor-fold>
                 audio.AudioPlayer.play("/pacman/screamo.wav");
+                scaryPictureTimer.start(2000);
+                
                 
             }
            
@@ -1460,6 +1471,7 @@ class Arena extends Environment implements CellDataProviderIntf {
             grid.paintComponent(graphics);
 
         }
+        
         if (pac != null) {
             pac.draw(graphics);
         }
@@ -1489,6 +1501,9 @@ class Arena extends Environment implements CellDataProviderIntf {
             if (yellowChica != null) {
                 yellowChica.draw(g);
             }
+            java.awt.Image scaryPicture = ResourceTools.loadImageFromResource("pacman/scary.png");
+        if (!scaryPictureTimer.isComplete()) graphics.drawImage(scaryPicture, 0, 0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, this);
+            
         }
         if (state == GameState.PAUSED) {
 //            graphics.setFont();

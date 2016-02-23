@@ -37,11 +37,11 @@ public class Pacman {
         
     }
     
-    public Rectangle getHitBox(){
+         public Rectangle getHitBox(){
         return new Rectangle(x, y ,width ,height );
        
 //        return new Rectangle(x + (width / 4), y + (height / 4),(width / 2), (height / 2));
-    }
+         }
 
     public void draw(Graphics graphics) {
         graphics.setColor(color);
@@ -74,9 +74,9 @@ public class Pacman {
             graphics.fillArc(x, y, width, height, 270 + mouthWidth / 2, 360 - (mouthWidth));
         } 
         
-        graphics.setColor(Color.BLACK);
-        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
-    }
+//        graphics.setColor(Color.BLACK);
+//        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
+     }
     
 
     public void move() {

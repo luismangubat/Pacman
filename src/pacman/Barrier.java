@@ -21,7 +21,7 @@ public class Barrier {
         graphics.fill3DRect(cellData.getSystemCoordX(x, y), cellData.getSystemCoordY(x, y), cellData.getCellWidth(), cellData.getCellHeight(), true);
         
         //temp for debug
-        graphics.setColor(Color.PINK);
+        graphics.setColor(Color.red);
         graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
 
